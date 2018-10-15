@@ -11,14 +11,17 @@ namespace Hyper_V_Manager
 {
     /// <summary>
     /// Possible VM States
+    /// https://docs.microsoft.com/en-us/windows/desktop/hyperv_v2/requeststatechange-msvm-computersystem
     /// </summary>
     public enum VmState
     {
         Unknown = 0,
-        Running = 2,
-        Stopped = 3,
-        Paused = 32768,
-        Saved = 32769,
+        Other = 1,          // Corresponds to CIM_EnabledLogicalElement.EnabledState = Other.
+        Running = 2,        // Enabled
+        Stopped = 3,        // Disabled
+        ShutDown = 4,       // Valid in version 1 (V1) of Hyper-V only. The virtual machine is shutting down via the shutdown service. Corresponds to CIM_EnabledLogicalElement.EnabledState = ShuttingDown.
+        Saved = 6,          // Corresponds to CIM_EnabledLogicalElement.EnabledState = Enabled but offline.
+        Paused = 9,         // Corresponds to CIM_EnabledLogicalElement.EnabledState = Quiesce, Enabled but paused.
         Starting = 32770,
         Saving = 32773,
         Stopping = 32774,
@@ -150,39 +153,43 @@ namespace Hyper_V_Manager
         /// <summary>
         /// Set the VM State
         /// </summary>
-        /// <param name="vmState">Requested state</param>
+        /// <param name="requestedState">Requested state</param>
         /// <param name="vmName">Name of the VM</param>
-        private void ChangeVmState(string vmState, string vmName)
+        private void ChangeVmState(string requestedState, string vmName)
         {
             var localVMs = GetVMs();
             
             _timer.Enabled = true;
 
+            // Loop to find a matching VM
             foreach (var vm in localVMs)
             {
                 if (vm["ElementName"].ToString() != vmName) continue;
-                _changingVMs.Add(vm["ElementName"].ToString(), "Unknown");
+
+                // Set the state to unknown as we request the change
+                _changingVMs[vm["ElementName"].ToString()] = VmState.Unknown.ToString();
 
                 var inParams = vm.GetMethodParameters("RequestStateChange");
 
-                switch (vmState)
+                switch (requestedState)
                 {
                     case "Start":
-                        inParams["RequestedState"] = (int) VmState.Running;
+                        inParams["RequestedState"] = (ushort) VmState.Running;
                         break;
                     case "Stop":
-                        inParams["RequestedState"] = (int) VmState.Stopped;
+                        inParams["RequestedState"] = (ushort) VmState.Stopped;
                         break;
                     case "Pause":
-                        inParams["RequestedState"] = (int) VmState.Paused;
+                        inParams["RequestedState"] = (ushort) VmState.Paused;
                         break;
                     case "Save State":
-                        inParams["RequestedState"] = (int) VmState.Saved;
+                        inParams["RequestedState"] = (ushort) VmState.Saved;
                         break;
                     default:
                         throw new Exception("Unexpected VM State");
                 }
-
+                // Todo - handle response from request to change
+                // See doc for possible responses https://docs.microsoft.com/en-us/previous-versions/windows/desktop/virtual/requeststatechange-msvm-computersystem
                 vm.InvokeMethod("RequestStateChange", inParams, null);
             }
         }
