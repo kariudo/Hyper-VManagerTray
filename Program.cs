@@ -11,6 +11,10 @@ namespace Hyper_V_Manager
         [STAThread]
         private static void Main()
         {
+#if DEBUG
+            while (!System.Diagnostics.Debugger.IsAttached)
+                System.Threading.Thread.Sleep(100);
+#endif
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());

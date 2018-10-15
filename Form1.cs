@@ -116,7 +116,7 @@ namespace Hyper_V_Manager
             foreach (var o in vmCollection)
             {
                 var vm = (ManagementObject) o;
-                if (vm["AssignedNumaNodeList"] != null)
+                if (vm.Properties["Caption"].Value.ToString() == "Virtual Machine")
                 {
                     vms.Add(vm);
                 }
