@@ -1,0 +1,18 @@
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\bin\Debug\Hyper-V Manager.exe
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\bin\Debug\Hyper-V Manager.pdb
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\obj\Debug\Hyper_V_Manager.Form1.resources
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\obj\Debug\Hyper_V_Manager.Properties.Resources.resources
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\obj\Debug\Hyper-V Manager.csproj.GenerateResource.Cache
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\obj\Debug\Hyper-V Manager.exe
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\obj\Debug\Hyper-V Manager.pdb
+C:\Users\Jerry\Documents\Visual Studio 2008\Projects\Hyper-V Manager\Hyper-V Manager\bin\Debug\Hyper-V Manager.exe.config
+D:\Hyper-VManager\bin\Debug\Hyper-V Manager.exe.config
+D:\Hyper-VManager\obj\Debug\Hyper-V Manager.exe
+D:\Hyper-VManager\obj\Debug\Hyper-V Manager.pdb
+D:\Hyper-VManager\bin\Debug\Hyper-V Manager.exe
+D:\Hyper-VManager\bin\Debug\Hyper-V Manager.pdb
+D:\Hyper-VManager\obj\Debug\ResolveAssemblyReference.cache
+D:\Hyper-VManager\obj\Debug\Hyper_V_Manager.Form1.resources
+D:\Hyper-VManager\obj\Debug\Hyper_V_Manager.Properties.Resources.resources
+D:\Hyper-VManager\obj\Debug\Hyper-V Manager.csproj.GenerateResource.Cache
