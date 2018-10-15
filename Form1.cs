@@ -9,6 +9,27 @@ using Timer = System.Timers.Timer;
 
 namespace Hyper_V_Manager
 {
+    /// <summary>
+    /// Possible VM States
+    /// </summary>
+    public enum VmState
+    {
+        Unknown = 0,
+        Running = 2,
+        Stopped = 3,
+        Paused = 32768,
+        Saved = 32769,
+        Starting = 32770,
+        Saving = 32773,
+        Stopping = 32774,
+        Pausing = 32776,
+        Resuming = 32777
+    }
+
+    /// <inheritdoc />
+    /// <summary>
+    /// Main Form
+    /// </summary>
     public partial class Form1 : Form
     {
         public Form1()
@@ -16,26 +37,14 @@ namespace Hyper_V_Manager
             InitializeComponent();
         }
 
-        /*
-         * 
-         * Unknown      - 0     - state could not be determined
-         * Enabled      - 2     - VM is running
-         * Disabled     - 3     - VM is stopped
-         * Paused       - 32768 - VM is paused
-         * Suspended    - 32769 - VM is in a saved state
-         * Starting     - 32770 - VM is starting
-         * Saving       - 32773 - VM is saving its state
-         * Stopping     - 32774 - VM is turning off
-         * Pausing      - 32776 - VM is pausing
-         * Resuming     - 32777 - VM is resuming from a paused state
-         * 
-         */
-
-
         private readonly Timer _timer = new Timer();
         private readonly Dictionary<string, string> _changingVMs = new Dictionary<string, string>();
 
-        
+        /// <summary>
+        /// Form load event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Load(object sender, EventArgs e)
         {
             _timer.Elapsed += TimerElapsed;
@@ -43,13 +52,20 @@ namespace Hyper_V_Manager
             BuildContextMenu();
         }
 
+        /// <summary>
+        /// Time elapsed event
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
             if(!contextMenuStrip1.Visible)
                 UpdateBalloontip();
         }
 
-        
+        /// <summary>
+        /// Update Balloon Tooltip on VM State Change
+        /// </summary>
         private void UpdateBalloontip()
         {
             var localVMs = GetVMs();
@@ -57,51 +73,26 @@ namespace Hyper_V_Manager
             foreach (var vm in localVMs)
             {
                 if (!_changingVMs.ContainsKey(vm["ElementName"].ToString())) continue;
-                string currentBalloonState;
                 var initvmBalloonState = _changingVMs[vm["ElementName"].ToString()];
-
-                switch (Convert.ToInt32(vm["EnabledState"]))
-                {
-                    case 2:
-                        currentBalloonState = "Running";
-                        break;
-                    case 3:
-                        currentBalloonState = "Stopped";
-                        break;
-                    case 32768:
-                        currentBalloonState = "Paused";
-                        break;
-                    case 32769:
-                        currentBalloonState = "Saved";
-                        break;
-                    case 32770:
-                        currentBalloonState = "Starting";
-                        break;
-                    case 32773:
-                        currentBalloonState = "Saving";
-                        break;
-                    case 32774:
-                        currentBalloonState = "Stopping";
-                        break;
-                    default:
-                        currentBalloonState = "Unknown";
-                        break;
-                }
+                var vmState = (VmState) Convert.ToInt32(vm["EnabledState"]);
+                var currentBalloonState = vmState.ToString();
 
                 if (initvmBalloonState != currentBalloonState)
                 {
                     notifyIcon1.ShowBalloonTip(4000, "VM State Changed", vm["ElementName"] + " " + currentBalloonState, ToolTipIcon.Info);
                     _changingVMs[vm["ElementName"].ToString()] = currentBalloonState;
                 }
-                else if (currentBalloonState == "Running" || currentBalloonState == "Stopped" || currentBalloonState == "Paused" || currentBalloonState == "Saved")
+                else if (vmState == VmState.Running || vmState == VmState.Stopped || vmState == VmState.Paused || vmState == VmState.Saved)
                     _changingVMs.Remove(vm["ElementName"].ToString());
                 else if (_changingVMs.Count <= 0)
                     _timer.Enabled = false;
             }
         }
 
-
-
+        /// <summary>
+        /// Get an enumerable list of Hyper-V VMs using WMI
+        /// </summary>
+        /// <returns></returns>
         private static IEnumerable<ManagementObject> GetVMs()
         {
             var vms = new List<ManagementObject>();
@@ -125,33 +116,30 @@ namespace Hyper_V_Manager
             return vms;
         }
 
-        /*
-         * Context menu events
-         */
         #region ContextMenuEvents
 
 
-        void PauseItem_Click(object sender, EventArgs e)
+        private void PauseItem_Click(object sender, EventArgs e)
         {
             ChangeVmState("Pause", ((ToolStripMenuItem)sender).OwnerItem.Name);
         }
 
-        void SaveStateItem_Click(object sender, EventArgs e)
+        private void SaveStateItem_Click(object sender, EventArgs e)
         {
             ChangeVmState("Save State", ((ToolStripMenuItem)sender).OwnerItem.Name);
         }
 
-        void StopItem_Click(object sender, EventArgs e)
+        private void StopItem_Click(object sender, EventArgs e)
         {
             ChangeVmState("Stop", ((ToolStripMenuItem)sender).OwnerItem.Name);
         }
 
-        void StartItem_Click(object sender, EventArgs e)
+        private void StartItem_Click(object sender, EventArgs e)
         {
             ChangeVmState("Start", ((ToolStripMenuItem)sender).OwnerItem.Name);
         }
 
-        void ExitItem_Click(object sender, EventArgs e)
+        private void ExitItem_Click(object sender, EventArgs e)
         {
             Close();
         }
@@ -159,9 +147,11 @@ namespace Hyper_V_Manager
         #endregion
 
 
-        /*
-         * Change the state of the VM based on the state passed in and the VM Name
-         */
+        /// <summary>
+        /// Set the VM State
+        /// </summary>
+        /// <param name="vmState">Requested state</param>
+        /// <param name="vmName">Name of the VM</param>
         private void ChangeVmState(string vmState, string vmName)
         {
             var localVMs = GetVMs();
@@ -178,16 +168,16 @@ namespace Hyper_V_Manager
                 switch (vmState)
                 {
                     case "Start":
-                        inParams["RequestedState"] = 2;
+                        inParams["RequestedState"] = (int) VmState.Running;
                         break;
                     case "Stop":
-                        inParams["RequestedState"] = 3;
+                        inParams["RequestedState"] = (int) VmState.Stopped;
                         break;
                     case "Pause":
-                        inParams["RequestedState"] = 32768;
+                        inParams["RequestedState"] = (int) VmState.Paused;
                         break;
                     case "Save State":
-                        inParams["RequestedState"] = 32769;
+                        inParams["RequestedState"] = (int) VmState.Saved;
                         break;
                     default:
                         throw new Exception("Unexpected VM State");
@@ -197,27 +187,20 @@ namespace Hyper_V_Manager
             }
         }
 
-
-        /*
-         * Build out the context menu items.
-         */
-
-
+        /// <summary>
+        /// Build context menu
+        /// </summary>
         private void BuildContextMenu()
         {
-            //Re-get the VM's from Hyper-V
+            // Get all VMs
             var localVMs = GetVMs();
 
-            //Clear out the menu items
+            // Clear the context menu
             contextMenuStrip1.Items.Clear();
 
-            //loop through the VMs and rebuild out the context menus
-            //Do this to ensure the proper status is displayed and the proper action items are enabled
+            // Add context menu items with current state options
             foreach (var vm in localVMs)
             {
-
-                string vmState;
-
                 var startItem = new ToolStripMenuItem("Start");
                 startItem.Click += StartItem_Click;
                 startItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
@@ -234,77 +217,73 @@ namespace Hyper_V_Manager
                 pauseItem.Click += PauseItem_Click;
                 pauseItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
 
-                switch (Convert.ToInt32(vm["EnabledState"]))
+                var vmState = (VmState)Convert.ToInt32(vm["EnabledState"]);
+
+                // ReSharper disable once SwitchStatementMissingSomeCases
+                switch (vmState)
                 {
-                    case 2:
-                        vmState = "Running";
+                    case VmState.Running:
                         startItem.Enabled = false;
                         break;
-                    case 3:
-                        vmState = "Stopped";
+                    case VmState.Stopped:
                         stopItem.Enabled = false;
                         saveStateItem.Enabled = false;
                         pauseItem.Enabled = false;
                         break;
-                    case 32768:
-                        vmState = "Paused";
+                    case VmState.Paused:
                         pauseItem.Enabled = false;
                         break;
-                    case 32769:
-                        vmState = "Saved";
+                    case VmState.Saved:
                         saveStateItem.Enabled = false;
                         stopItem.Enabled = false;
                         pauseItem.Enabled = false;
-                        break;
-                    case 32770:
-                        vmState = "Starting";
-                        break;
-                    case 32773:
-                        vmState = "Saving";
-                        break;
-                    case 32774:
-                        vmState = "Stopping";
-                        break;
-                    default:
-                        vmState = "Unknown";
                         break;
                 }
 
-                var vmStatusText = vm["ElementName"] + " " + vmState;
+                // Create a lable for each VM, show its state if not stopped
+                var vmStatusText = vm["ElementName"].ToString();
+                if (vmState != VmState.Stopped) vmStatusText += " [" + vmState + "]";
 
+                // Create sub-menu
                 var vmItem = new ToolStripMenuItem(vmStatusText) {Name = vm["ElementName"].ToString()};
 
-
-                if (vmState == "Running" || vmState == "Stopped" || vmState == "Saved" || vmState == "Paused")
+                // Add sub-menu items
+                if (vmState == VmState.Running || vmState == VmState.Stopped || vmState == VmState.Saved || vmState == VmState.Paused)
                 {
                     vmItem.DropDownItems.Add(startItem);
                     vmItem.DropDownItems.Add(stopItem);
                     vmItem.DropDownItems.Add(saveStateItem);
                     vmItem.DropDownItems.Add(pauseItem);
                 }
-            
-            
                 contextMenuStrip1.Items.Add(vmItem);
-                
             }
 
+            // Add Exit option
             var exitItem = new ToolStripMenuItem("Exit");
             exitItem.Click += ExitItem_Click;
             contextMenuStrip1.Items.Add(exitItem);
+
+            // Redraw the menu
             contextMenuStrip1.Refresh();
         }
 
-        /*
-         * When the context menu is opened, rebuild the Context Menu Items.  This ensures the status and items are up to date
-         */
+        /// <summary>
+        /// Context menu open event
+        /// Build a new context menu op open
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ContextMenuStrip1_Opening(object sender, CancelEventArgs e)
         {
             BuildContextMenu();       
         }
 
-        /*
-         *  When the form is activated, hide it so the only UI is the system tray icon.
-         */
+        /// <summary>
+        /// Form activated event
+        /// Hide the form, to only show the system tray
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Form1_Activated(object sender, EventArgs e)
         {
             Hide();
