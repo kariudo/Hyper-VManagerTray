@@ -1,9 +1,0 @@
-D:\Hyper-VManager\bin\Release\Hyper-V Manager.exe.config
-D:\Hyper-VManager\bin\Release\Hyper-V Manager.exe
-D:\Hyper-VManager\bin\Release\Hyper-V Manager.pdb
-D:\Hyper-VManager\obj\Release\ResolveAssemblyReference.cache
-D:\Hyper-VManager\obj\Release\Hyper_V_Manager.Form1.resources
-D:\Hyper-VManager\obj\Release\Hyper_V_Manager.Properties.Resources.resources
-D:\Hyper-VManager\obj\Release\Hyper-V Manager.csproj.GenerateResource.Cache
-D:\Hyper-VManager\obj\Release\Hyper-V Manager.exe
-D:\Hyper-VManager\obj\Release\Hyper-V Manager.pdb
