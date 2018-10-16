@@ -1,6 +1,9 @@
 # Hyper-VManagerTray
 Provides access to Hyper-V (V2) Management from the system tray
 
+## Screenshot
+![System Tray Screenshot](https://i.imgur.com/I6LVxsp.png)
+
 ## Requirements
   * Hyper-V (V2+)
   * .NET 4.7.2
