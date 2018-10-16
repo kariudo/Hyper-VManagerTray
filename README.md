@@ -22,6 +22,9 @@ Just run the `.exe`, features are described below.
    * Save State
    * Pause
  * Notifications will be popped for state changes
+ 
+## Tested On
+ * Windows 10 Pro (Version 1803, OS Build 17134.345)
 
 ## Credits
 The original idea and basis for this tool was from [Jerry Ormans Microsoft blog article](https://blogs.msdn.microsoft.com/jorman/2010/01/24/hyper-v-manager/);
