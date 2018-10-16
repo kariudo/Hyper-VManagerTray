@@ -121,6 +121,12 @@ namespace Hyper_V_Manager
 
         #region ContextMenuEvents
 
+        private void VmItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start($@"{Environment.GetEnvironmentVariable("SYSTEMROOT")}\System32\vmconnect.exe",
+                $"localhost {((ToolStripMenuItem) sender).Name}");
+        }
+
 
         private void PauseItem_Click(object sender, EventArgs e)
         {
@@ -253,6 +259,9 @@ namespace Hyper_V_Manager
 
                 // Create sub-menu
                 var vmItem = new ToolStripMenuItem(vmStatusText) {Name = vm["ElementName"].ToString()};
+
+                // Add a VM click handler to open remote
+                vmItem.Click += VmItem_Click;
 
                 // Add sub-menu items
                 if (vmState == VmState.Running || vmState == VmState.Stopped || vmState == VmState.Saved || vmState == VmState.Paused)
