@@ -32,3 +32,6 @@ however, his tool had stopped working for everyone years ago, and I needed one t
 As such this is a rewrite based on that idea, but I would like to thank him for the (though
 non-working) starting point. Aesthetically its very similar with the addition of a number of
 features and fixes, as well as being updated to use current WMI.
+
+## License
+ * MIT License (See LICENSE for details)
