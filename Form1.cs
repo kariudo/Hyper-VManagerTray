@@ -124,7 +124,7 @@ namespace Hyper_V_Manager
         private void VmItem_Click(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start($@"{Environment.GetEnvironmentVariable("SYSTEMROOT")}\System32\vmconnect.exe",
-                $"localhost {((ToolStripMenuItem) sender).Name}");
+                $"localhost \"{((ToolStripMenuItem) sender).Name}\"");
         }
 
 
@@ -136,6 +136,11 @@ namespace Hyper_V_Manager
         private void SaveStateItem_Click(object sender, EventArgs e)
         {
             ChangeVmState("Save State", ((ToolStripMenuItem)sender).OwnerItem.Name);
+        }
+
+        private void ShutDownItem_Click(object sender, EventArgs e)
+        {
+            ChangeVmState("Shut Down", ((ToolStripMenuItem)sender).OwnerItem.Name);
         }
 
         private void StopItem_Click(object sender, EventArgs e)
@@ -185,6 +190,9 @@ namespace Hyper_V_Manager
                     case "Stop":
                         inParams["RequestedState"] = (ushort) VmState.Stopped;
                         break;
+                    case "Shut Down":
+                        inParams["RequestedState"] = (ushort) VmState.ShutDown;
+                        break;
                     case "Pause":
                         inParams["RequestedState"] = (ushort) VmState.Paused;
                         break;
@@ -222,6 +230,10 @@ namespace Hyper_V_Manager
                 stopItem.Click += StopItem_Click;
                 stopItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
 
+                var shutDownItem = new ToolStripMenuItem("Shut Down");
+                shutDownItem.Click += ShutDownItem_Click;
+                shutDownItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
+
                 var saveStateItem = new ToolStripMenuItem("Save State");
                 saveStateItem.Click += SaveStateItem_Click;
                 saveStateItem.DisplayStyle = ToolStripItemDisplayStyle.Text;
@@ -238,17 +250,14 @@ namespace Hyper_V_Manager
                     case VmState.Running:
                         startItem.Enabled = false;
                         break;
+                    case VmState.Saved:
+                    case VmState.ShutDown:
                     case VmState.Stopped:
                         stopItem.Enabled = false;
                         saveStateItem.Enabled = false;
                         pauseItem.Enabled = false;
                         break;
                     case VmState.Paused:
-                        pauseItem.Enabled = false;
-                        break;
-                    case VmState.Saved:
-                        saveStateItem.Enabled = false;
-                        stopItem.Enabled = false;
                         pauseItem.Enabled = false;
                         break;
                 }
@@ -268,6 +277,7 @@ namespace Hyper_V_Manager
                 {
                     vmItem.DropDownItems.Add(startItem);
                     vmItem.DropDownItems.Add(stopItem);
+                    vmItem.DropDownItems.Add(shutDownItem);
                     vmItem.DropDownItems.Add(saveStateItem);
                     vmItem.DropDownItems.Add(pauseItem);
                 }
