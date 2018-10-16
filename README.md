@@ -21,8 +21,9 @@ Just run the `.exe`.
  * Notifications will be popped for state changes
 
 
-## Credit
-The original idea and basis for this tool was from Jerry Ormans Microsoft blog article;
+## Credits
+The original idea and basis for this tool was from [Jerry Ormans Microsoft blog article](https://blogs.msdn.microsoft.com/jorman/2010/01/24/hyper-v-manager/);
 however, his tool had stopped working for everyone years ago, and I needed one that worked.
 As such this is a rewrite based on that idea, but I would like to thank him for the (though
-non-working) starting point.
+non-working) starting point. Aesthetically its very similar with the addition of a number of
+features and fixes, as well as being updated to use current WMI.
