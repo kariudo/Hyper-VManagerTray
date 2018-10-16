@@ -6,9 +6,9 @@ Provides access to Hyper-V (V2) Management from the system tray
   * .NET 4.7.2
 
 ## Usage
-Just run the `.exe`.
+Just run the `.exe`, features are described below.
 
-## Features
+### Features
  * Right-click to access a list of available VMs on the host
  * The state of any VM not "Stopped" will be shown as well in the list with its name
  * Clicking on an entry in the list will open `vmconnect` to that vm
@@ -19,7 +19,6 @@ Just run the `.exe`.
    * Save State
    * Pause
  * Notifications will be popped for state changes
-
 
 ## Credits
 The original idea and basis for this tool was from [Jerry Ormans Microsoft blog article](https://blogs.msdn.microsoft.com/jorman/2010/01/24/hyper-v-manager/);
