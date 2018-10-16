@@ -11,7 +11,6 @@ namespace Hyper_V_Manager
 {
     /// <summary>
     /// Possible VM States
-    /// https://docs.microsoft.com/en-us/windows/desktop/hyperv_v2/requeststatechange-msvm-computersystem
     /// </summary>
     public enum VmState
     {
@@ -203,7 +202,7 @@ namespace Hyper_V_Manager
                         throw new Exception("Unexpected VM State");
                 }
                 // Todo - handle response from request to change
-                // See doc for possible responses https://docs.microsoft.com/en-us/previous-versions/windows/desktop/virtual/requeststatechange-msvm-computersystem
+                // https://docs.microsoft.com/en-us/windows/desktop/hyperv_v2/requeststatechange-msvm-computersystem
                 vm.InvokeMethod("RequestStateChange", inParams, null);
             }
         }
